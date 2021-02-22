@@ -20,5 +20,6 @@ export default {
     width: 800px;
     display: flex;
     margin: 0 auto;
+    margin-bottom: 40px;
   }
 </style>

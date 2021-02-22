@@ -7,12 +7,12 @@
     </el-table-column>
     <el-table-column label="组合">
       <template slot-scope="props">
-        <span
+        <el-tag
           v-for="(item, index) in props.row.Composition"
           :key="index"
           class="zh"
           >{{ item }}
-        </span>
+        </el-tag>
       </template>
     </el-table-column>
     <el-table-column prop="rate" label="价格" width="180"> </el-table-column>

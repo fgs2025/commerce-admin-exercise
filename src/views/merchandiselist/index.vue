@@ -1,7 +1,7 @@
 <template>
   <div class="merchandiselist-wrap">
     <search></search>
-    <tab></tab>
+    <!-- <tab></tab> -->
     <div class="list">
       <el-table :data="List" style="width: 100%" border stripe >
         <el-table-column prop="id" label="商品ID" width="80" align="center">
@@ -31,7 +31,7 @@
         >
         </el-table-column>
         <el-table-column label="规格/库存" type="expand" width="150">
-          <template slot-scope="props">
+          <template slot-scope="props">          
             <addspec :props="props"></addspec>
             <spectable :props="props"></spectable>
             <addsku :props="props"></addsku>
@@ -57,7 +57,7 @@ import Addspec from "./components/addspec.vue";
 import search from "./components/search.vue";
 import Skutable from "./components/skutable.vue";
 import Spectable from "./components/spectable.vue";
-import Tab from "./components/tab.vue";
+// import Tab from "./components/tab.vue";
 export default {
   data() {
     return {};
@@ -92,9 +92,12 @@ export default {
         });
     },
   },
-  components: { search, Tab, Addspec, Spectable, Skutable, Addsku },
+  components: { search, 
+  // Tab,
+   Addspec, Spectable, Skutable, Addsku },
 };
 </script>
 
 <style lang="less" scoped>
+
 </style>

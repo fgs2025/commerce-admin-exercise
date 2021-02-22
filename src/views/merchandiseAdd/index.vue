@@ -39,6 +39,7 @@
           >
             <i class="el-icon-plus"></i>
           </el-upload>
+
           <el-dialog :visible.sync="dialogVisible">
             <img width="100%" :src="dialogImageUrl" alt="" />
           </el-dialog>
@@ -47,7 +48,9 @@
           <el-input type="textarea" v-model="ruleForm.details"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">立即创建</el-button>
+          <el-button type="primary" @click="addspu('ruleForm')"
+            >立即创建</el-button
+          >
           <el-button @click="resetForm('ruleForm')">重置</el-button>
         </el-form-item>
       </el-form>
@@ -67,6 +70,8 @@ export default {
         img: [],
         type: "",
         details: "",
+        specsList: [],
+        sku: [],
       },
       rules: {
         title: [{ required: true, message: "请输入商品名称", trigger: "blur" }],
@@ -89,6 +94,28 @@ export default {
     },
   },
   methods: {
+    addspu(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.$store.dispatch("spu/addspu", this.ruleForm);
+          this.$message({
+            message: "添加成功",
+            type: "success",
+          });
+          // this.ruleForm = {
+          //   id: "",
+          //   title: "",
+          //   img: [],
+          //   type: "",
+          //   details: "",
+          //   specsList: [],
+          //   sku: [],
+          // };
+        } else {
+          return false;
+        }
+      });
+    },
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
@@ -103,7 +130,7 @@ export default {
 };
 </script>
 
-<style lang="less" >
+<style lang="less" scope>
 .title {
   font-size: 30px;
   text-align: center;
