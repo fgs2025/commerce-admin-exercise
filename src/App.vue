@@ -6,5 +6,4 @@
 
 <style lang="less">
 @import url(./css/global.less);
-
 </style>

@@ -29,21 +29,18 @@
           <add-class class="addclass"></add-class>
         </el-form-item>
 
-        <el-form-item label="商品图片">
-          <el-upload
-            action="/merchandiseAdd"
-            list-type="picture-card"
-            :on-preview="handlePictureCardPreview"
-            :on-remove="handleRemove"
-            :file-list="fileLists"
+        <el-form-item label="商品图片" class="img">
+          <el-image
+            style="width: 100px; height: 100px"
+            :src="item"
+            :preview-src-list="ruleForm.img"
+            v-for="(item, index) in ruleForm.img"
+            :key="index"
           >
-            <i class="el-icon-plus"></i>
-          </el-upload>
-
-          <el-dialog :visible.sync="dialogVisible">
-            <img width="100%" :src="dialogImageUrl" alt="" />
-          </el-dialog>
+          </el-image>
+          <input type="file" ref="img" class="file" @change="img_change" />
         </el-form-item>
+
         <el-form-item label="商品详情" prop="details">
           <el-input type="textarea" v-model="ruleForm.details"></el-input>
         </el-form-item>
@@ -75,11 +72,8 @@ export default {
       },
       rules: {
         title: [{ required: true, message: "请输入商品名称", trigger: "blur" }],
-        type: [{ required: true, message: "请选择分类", trigger: "change" }],
+        // type: [{ required: true, message: "请选择分类", trigger: "change" }],
       },
-      dialogImageUrl: "",
-      dialogVisible: false,
-      fileLists: [],
     };
   },
   computed: {
@@ -119,12 +113,19 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
+
+    img_change(e) {
+      // console.log(e.target.files)
+
+      const readfile = new FileReader();
+      readfile.onload = (e) => {
+        this.ruleForm.img.push(e.target.result);
+      };
+      readfile.readAsDataURL(e.target.files[0]);
+
+      // Base(e.target.files[0], (img) => {
+      //   this.ruleForm.img.push(img)
+      // });
     },
   },
 };
@@ -145,6 +146,17 @@ export default {
   }
   .addclass {
     margin-left: 20px;
+  }
+  .img {
+    img {
+      & + img {
+        margin-left: 10px;
+      }
+    }
+    .file {
+      height: 40px;
+      line-height: 40px;
+    }
   }
 }
 </style>
