@@ -30,15 +30,32 @@
         </el-form-item>
 
         <el-form-item label="商品图片" class="img">
-          <el-image
-            style="width: 100px; height: 100px"
-            :src="item"
-            :preview-src-list="ruleForm.img"
+          <div
+            class="img-box"
             v-for="(item, index) in ruleForm.img"
             :key="index"
           >
-          </el-image>
-          <input type="file" ref="img" class="file" @change="img_change" />
+            <img :src="item" alt="" />
+            <div class="show">
+              <i
+                class="el-icon-zoom-in"
+                @click="handlePictureCardPreview(item)"
+              ></i>
+              <i class="el-icon-delete" @click="removeimg(index)"></i>
+            </div>
+          </div>
+
+          <el-upload
+            action=""
+            list-type="picture-card"
+            :before-upload="beforeUpload"
+            multiple
+          >
+            <i class="el-icon-plus"></i>
+          </el-upload>
+          <el-dialog :visible.sync="dialogVisible">
+            <img width="100%" :src="dialogImageUrl" alt="" />
+          </el-dialog>
         </el-form-item>
 
         <el-form-item label="商品详情" prop="details">
@@ -74,6 +91,8 @@ export default {
         title: [{ required: true, message: "请输入商品名称", trigger: "blur" }],
         // type: [{ required: true, message: "请选择分类", trigger: "change" }],
       },
+      dialogImageUrl: "",
+      dialogVisible: false,
     };
   },
   computed: {
@@ -114,18 +133,45 @@ export default {
       this.$refs[formName].resetFields();
     },
 
-    img_change(e) {
-      // console.log(e.target.files)
+    // img_change(e) {
+    //   // console.log(e.target.files)
+    //   const readfile = new FileReader();
+    //   readfile.onload = (e) => {
+    //     this.ruleForm.img.push(e.target.result);
+    //   };
+    //   readfile.readAsDataURL(e.target.files[0]);
+    //   // Base(e.target.files[0], (img) => {
+    //   //   this.ruleForm.img.push(img)
+    //   // });
+    // },
 
-      const readfile = new FileReader();
-      readfile.onload = (e) => {
-        this.ruleForm.img.push(e.target.result);
-      };
-      readfile.readAsDataURL(e.target.files[0]);
-
-      // Base(e.target.files[0], (img) => {
-      //   this.ruleForm.img.push(img)
-      // });
+    handlePictureCardPreview(url) {
+      this.dialogImageUrl = url;
+      this.dialogVisible = true;
+    },
+    beforeUpload(file) {
+      this.ruleForm.img.push(URL.createObjectURL(file));
+      return false;
+    },
+    removeimg(index) {
+      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.ruleForm.img.splice(index, 1);
+          this.$message({
+            type: "success",
+            message: "删除成功!",
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
   },
 };
@@ -148,9 +194,42 @@ export default {
     margin-left: 20px;
   }
   .img {
-    img {
-      & + img {
-        margin-left: 10px;
+    .img-box {
+      width: 148px;
+      height: 148px;
+      margin-right: 10px;
+      position: relative;
+      img {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      .show {
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        transform: all 1s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        i {
+          font-size: 25px;
+          cursor: pointer;
+          color: #fff;
+          & + i {
+            margin-left: 20px;
+          }
+        }
+      }
+      &:hover .show {
+        opacity: 1;
+        transform: all 1s;
       }
     }
     .file {

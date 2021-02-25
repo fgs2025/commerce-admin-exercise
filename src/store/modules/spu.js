@@ -104,7 +104,6 @@ export default {
       state.push(val);
     },
     addspecsList(state, val) {
-      // state[val.index].specsList.push({ title: val.value, spec: [] })
       state.forEach((row) => {
         if (row.id == val.id) {
           row.specsList.push({ title: val.value, spec: [] });
@@ -112,7 +111,6 @@ export default {
       });
     },
     addspec(state, val) {
-      // state[val.row].specsList[val.ro].spec.push(val.value)
       state.forEach((row) => {
         if (row.id == val.id) {
           row.specsList[val.ro].spec.push(val.value);
@@ -120,7 +118,6 @@ export default {
       });
     },
     removespec(state, val) {
-      // state[val.row].specsList[val.ro].spec.splice(val.r, 1)
       state.forEach((row) => {
         if (row.id == val.id) {
           row.specsList[val.ro].spec.splice(val.r, 1);
@@ -128,7 +125,6 @@ export default {
       });
     },
     tagupdata(state, val) {
-      // state[val.row].specsList[val.ro].title = val.value
       state.forEach((row) => {
         if (row.id == val.id) {
           row.specsList[val.ro].title = val.value;
@@ -136,7 +132,6 @@ export default {
       });
     },
     removelist(state, val) {
-      // state[val.row].specsList.splice(val.ro, 1)
       state.forEach((row) => {
         if (row.id == val.id) {
           row.specsList.splice(val.ro, 1);
@@ -170,6 +165,24 @@ export default {
         }
       });
     },
+    changespu(state, val) {
+      state.forEach((row) => {
+        if (row.id == val.id) {
+          row.type = val.form.type;
+          row.title = val.form.title;
+          row.details = val.form.details;
+        }
+      });
+    },
+    changesku(state, val) {
+      state.forEach((row) => {
+        if (row.id == val.id) {
+          row.sku[val.index].img = val.form.img;
+          row.sku[val.index].rate = val.form.rate;
+          row.sku[val.index].stock = val.form.stock;
+        }
+      });
+    },
   },
   actions: {
     addspu({ commit }, val) {
@@ -198,6 +211,12 @@ export default {
     },
     remove({ commit }, val) {
       commit("remove", val);
+    },
+    changespu({ commit }, val) {
+      commit("changespu", val);
+    },
+    changesku({ commit }, val) {
+      commit("changesku", val);
     },
   },
 };

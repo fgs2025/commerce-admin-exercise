@@ -15,7 +15,7 @@ export default {
         inputErrorMessage: "不能为空",
       })
         .then(({ value }) => {
-          this.$store.dispatch("classify/setClass", { title: value });
+          this.$store.dispatch("classify/setClass", {title: value });
           this.$message({
             type: "success",
             message: "添加成功",

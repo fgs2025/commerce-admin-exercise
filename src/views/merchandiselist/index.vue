@@ -1,6 +1,10 @@
 <template>
   <div class="merchandiselist-wrap">
-    <search></search>
+    <div class="search-box">
+      <el-input v-model="input" placeholder="请输入内容"></el-input>
+      <el-button type="primary" @click="search">搜索</el-button>
+    </div>
+    <!-- <search></search> -->
     <!-- <tab></tab> -->
     <div class="list">
       <el-table :data="List" style="width: 100%" border stripe>
@@ -40,7 +44,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="props">
-            <el-button size="mini" @click="changespu(props.row.id)"
+            <el-button size="mini" @click="spuInfo(props.row.id)"
               >编辑</el-button
             >
             <el-button size="mini" type="danger" @click="shanchu(props.row.id)"
@@ -78,15 +82,32 @@
             </el-form-item>
 
             <el-form-item label="商品图片" class="img">
-              <el-image
-                style="width: 100px; height: 100px;margin-right: 20px;"
-                :src="item"
-                
+              <div
+                class="img-box"
                 v-for="(item, index) in Form.img"
                 :key="index"
               >
-              </el-image>
-              <input type="file" ref="img" class="file" />
+                <img :src="item" alt="" />
+                <div class="show">
+                  <i
+                    class="el-icon-zoom-in"
+                    @click="handlePictureCardPreview(item)"
+                  ></i>
+                  <i class="el-icon-delete" @click="removeimg(index)"></i>
+                </div>
+              </div>
+
+              <el-upload
+                action=""
+                list-type="picture-card"
+                :before-upload="beforeUpload"
+                multiple
+              >
+                <i class="el-icon-plus"></i>
+              </el-upload>
+              <el-dialog :visible.sync="dialogVisible" append-to-body>
+                <img width="100%" :src="dialogImageUrl" alt="" />
+              </el-dialog>
             </el-form-item>
 
             <el-form-item label="商品详情" prop="details">
@@ -96,9 +117,7 @@
         </div>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false"
-            >确 定</el-button
-          >
+          <el-button type="primary" @click="changespu">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -108,7 +127,7 @@
 <script>
 import Addsku from "./components/addsku.vue";
 import Addspec from "./components/addspec.vue";
-import search from "./components/search.vue";
+// import search from "./components/search.vue";
 import Skutable from "./components/skutable.vue";
 import Spectable from "./components/spectable.vue";
 // import Tab from "./components/tab.vue";
@@ -122,13 +141,26 @@ export default {
         img: [],
         details: "",
       },
+      id: "",
+      input: "",
+      List: [],
+      searchData: [],
       dialogFormVisible: false,
+      dialogImageUrl: "",
+      dialogVisible: false,
     };
   },
   computed: {
-    List() {
-      return this.$store.getters.getList;
-    },
+    // List() {
+    //   if (this.bbb.length == 0 || this.input.trim().length == 0) {
+    //     return this.$store.getters.getList;
+    //   }
+    //   // if (this.bbb.length == 0 && this.input.trim().length > 0) {
+    //   //   // this.bbb = [];
+    //   //   return this.bbb;
+    //   // }
+    //   return this.bbb;
+    // },
     Tab() {
       return this.$store.getters.getTab;
     },
@@ -138,6 +170,9 @@ export default {
     Tabs() {
       return this.Tab.slice(1, this.Tab.length);
     },
+  },
+  mounted() {
+    this.List = this.$store.getters.getList;
   },
   methods: {
     ImgUrl(row) {
@@ -151,6 +186,7 @@ export default {
       })
         .then(() => {
           this.$store.dispatch("spu/remove", id);
+          this.input = "";
           this.$message({
             type: "success",
             message: "删除成功!",
@@ -163,9 +199,10 @@ export default {
           });
         });
     },
-    changespu(id) {
+    spuInfo(id) {
       this.dialogFormVisible = true;
-      let box = this.List.filter((row) => row.id == id);
+      this.id = id;
+      let box = this.List.filter((row) => row.id == this.id);
       box.forEach((el) => {
         this.aaa = el;
       });
@@ -174,9 +211,61 @@ export default {
       this.Form.img = this.aaa.img;
       this.Form.details = this.aaa.details;
     },
+    changespu() {
+      this.dialogFormVisible = false;
+      this.$store.dispatch("spu/changespu", { id: this.id, form: this.Form });
+      this.$message({
+        message: "修改成功",
+        type: "success",
+      });
+    },
+    search() {
+      // this.searchData = [];
+      // this.List.forEach((row) => {
+      //   if (row.title.indexOf(this.input) >= 0) {
+      //     this.searchData.push(row);
+      //   }
+      // });
+      // this.List = this.searchData;
+    },
+    handlePictureCardPreview(url) {
+      this.dialogImageUrl = url;
+      this.dialogVisible = true;
+    },
+    beforeUpload(file) {
+      this.Form.img.push(URL.createObjectURL(file));
+      return false;
+    },
+    removeimg(index) {
+      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.Form.img.splice(index, 1);
+          this.$message({
+            type: "success",
+            message: "删除成功!",
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
+    },
+  },
+  watch: {
+    input(val) {
+      if (val == "") {
+        this.List = this.$store.getters.getList;
+      }
+    },
   },
   components: {
-    search,
+    // search,
     // Tab,
     Addspec,
     Spectable,
@@ -188,6 +277,12 @@ export default {
 </script>
 
 <style lang="less">
+.search-box {
+  width: 800px;
+  display: flex;
+  margin: 0 auto;
+  margin-bottom: 40px;
+}
 .changebox {
   .el-form-item__content {
     display: flex;
@@ -196,9 +291,42 @@ export default {
     margin-left: 20px;
   }
   .img {
-    img {
-      & + img {
-        margin-left: 10px;
+    .img-box {
+      width: 148px;
+      height: 148px;
+      margin-right: 10px;
+      position: relative;
+      img {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      .show {
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        transform: all 1s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        i {
+          font-size: 25px;
+          cursor: pointer;
+          color: #fff;
+          & + i {
+            margin-left: 20px;
+          }
+        }
+      }
+      &:hover .show {
+        opacity: 1;
+        transform: all 1s;
       }
     }
     .file {
