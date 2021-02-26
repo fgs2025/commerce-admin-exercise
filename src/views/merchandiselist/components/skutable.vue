@@ -32,23 +32,44 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog title="组合信息" :visible.sync="dialogFormVisible">
-      <div>
-        <el-form ref="form" :model="form" label-width="80px">
-          <el-form-item label="图片">
-            <el-image
-              style="width: 100px; height: 100px"
-              :src="form.img"
-            ></el-image>
-          </el-form-item>
-          <el-form-item label="价格">
-            <el-input v-model="form.rate"></el-input>
-          </el-form-item>
-          <el-form-item label="库存">
-            <el-input v-model="form.stock"></el-input>
-          </el-form-item>
-        </el-form>
-      </div>
+
+    <el-dialog
+      title="组合信息"
+      :visible.sync="dialogFormVisible"
+      class="spuinfo"
+    >
+      <el-form ref="form" :model="form" label-width="80px">
+        <el-form-item label="图片" class="img">
+          <div class="img-box">
+            <img :src="form.img" alt="" />
+            <div class="show">
+              <i
+                class="el-icon-zoom-in"
+                @click="handlePictureCardPreview(form.img)"
+              ></i>
+            </div>
+          </div>
+          <el-upload
+            action=""
+            list-type="picture-card"
+            multiple
+            :before-upload="beforeUpload"
+          >
+            <i class="el-icon-plus"></i>
+          </el-upload>
+          <el-dialog :visible.sync="dialogVisible" append-to-body>
+            <img width="100%" :src="dialogImageUrl" alt="" />
+          </el-dialog>
+        </el-form-item>
+
+        <el-form-item label="价格">
+          <el-input v-model="form.rate"></el-input>
+        </el-form-item>
+        <el-form-item label="库存">
+          <el-input v-model="form.stock"></el-input>
+        </el-form-item>
+      </el-form>
+
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="changesku">确 定</el-button>
@@ -70,6 +91,8 @@ export default {
       id: "",
       index: "",
       dialogFormVisible: false,
+      dialogImageUrl: "",
+      dialogVisible: false,
     };
   },
   computed: {
@@ -121,15 +144,68 @@ export default {
         type: "success",
       });
     },
+    beforeUpload(file) {
+      this.form.img = URL.createObjectURL(file);
+      return false;
+    },
+    handlePictureCardPreview(url) {
+      this.dialogImageUrl = url;
+      this.dialogVisible = true;
+    },
   },
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .skutable {
   margin-top: 10px;
 }
 .zh {
   margin-right: 10px;
+}
+.spuinfo {
+  .el-form-item__content {
+    display: flex;
+  }
+  .img {
+    .img-box {
+      width: 148px;
+      height: 148px;
+      margin-right: 10px;
+      position: relative;
+      img {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      .show {
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        transform: all 1s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        i {
+          font-size: 25px;
+          cursor: pointer;
+          color: #fff;
+          & + i {
+            margin-left: 20px;
+          }
+        }
+      }
+      &:hover .show {
+        opacity: 1;
+        transform: all 1s;
+      }
+    }
+  }
 }
 </style>

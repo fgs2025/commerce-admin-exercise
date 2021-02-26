@@ -53,6 +53,7 @@
           </template>
         </el-table-column>
       </el-table>
+
       <el-dialog title="商品信息" :visible.sync="dialogFormVisible">
         <div class="changebox">
           <el-form
@@ -127,10 +128,8 @@
 <script>
 import Addsku from "./components/addsku.vue";
 import Addspec from "./components/addspec.vue";
-// import search from "./components/search.vue";
 import Skutable from "./components/skutable.vue";
 import Spectable from "./components/spectable.vue";
-// import Tab from "./components/tab.vue";
 import addClass from "../classification/components/addClass.vue";
 export default {
   data() {
@@ -202,14 +201,15 @@ export default {
     spuInfo(id) {
       this.dialogFormVisible = true;
       this.id = id;
-      let box = this.List.filter((row) => row.id == this.id);
-      box.forEach((el) => {
-        this.aaa = el;
+      let info = this.List.filter((row) => row.id == this.id);
+      info.forEach((el) => {
+        this.infos = el;
       });
-      this.Form.title = this.aaa.title;
-      this.Form.type = this.aaa.type;
-      this.Form.img = this.aaa.img;
-      this.Form.details = this.aaa.details;
+      let obj = JSON.parse(JSON.stringify(this.infos));
+      this.Form.title = obj.title;
+      this.Form.type = obj.type;
+      this.Form.img = obj.img;
+      this.Form.details = obj.details;
     },
     changespu() {
       this.dialogFormVisible = false;
@@ -265,8 +265,6 @@ export default {
     },
   },
   components: {
-    // search,
-    // Tab,
     Addspec,
     Spectable,
     Skutable,

@@ -170,6 +170,7 @@ export default {
         if (row.id == val.id) {
           row.type = val.form.type;
           row.title = val.form.title;
+          row.img = val.form.img;
           row.details = val.form.details;
         }
       });
