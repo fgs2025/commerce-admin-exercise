@@ -48,13 +48,10 @@ export default {
       return this.$store.getters.getTab;
     },
     total() {
-      return this.Tabs.length;
-    },
-    Tabs() {
-      return this.Tab.slice(1, this.Tab.length);
+      return this.Tab.length;
     },
     totaltab() {
-      return this.Tabs.slice(
+      return this.Tab.slice(
         (this.currentPage - 1) * this.pagesize,
         this.pagesize * this.currentPage
       );
@@ -62,7 +59,7 @@ export default {
   },
   methods: {
     remove(index) {
-      index = this.currentPage * this.pagesize - (this.pagesize - (index + 1));
+      index = this.currentPage * this.pagesize - (this.pagesize - index);
       this.$confirm("此操作将永久删除该分类, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -83,7 +80,7 @@ export default {
         });
     },
     change(index) {
-      index = this.currentPage * this.pagesize - (this.pagesize - (index + 1));
+      index = this.currentPage * this.pagesize - (this.pagesize - index);
       this.$prompt("请输入修改的分类名称", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -118,5 +115,4 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>

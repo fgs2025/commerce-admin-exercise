@@ -22,7 +22,7 @@
             <el-option
               :label="item.title"
               :value="item.title"
-              v-for="(item, index) in Tabs"
+              v-for="(item, index) in Tab"
               :key="index"
             ></el-option>
           </el-select>
@@ -89,7 +89,7 @@ export default {
       },
       rules: {
         title: [{ required: true, message: "请输入商品名称", trigger: "blur" }],
-        // type: [{ required: true, message: "请选择分类", trigger: "change" }],
+        type: [{ required: true, message: "请选择分类", trigger: "change" }],
       },
       dialogImageUrl: "",
       dialogVisible: false,
@@ -99,31 +99,17 @@ export default {
     Tab() {
       return this.$store.getters.getTab;
     },
-    total() {
-      return this.Tabs.length;
-    },
-    Tabs() {
-      return this.Tab.slice(1, this.Tab.length);
-    },
   },
   methods: {
     addspu(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$store.dispatch("spu/addspu", this.ruleForm);
+          this.$store.dispatch("spu/addspu", { ...this.ruleForm });
           this.$message({
             message: "添加成功",
             type: "success",
           });
-          // this.ruleForm = {
-          //   id: "",
-          //   title: "",
-          //   img: [],
-          //   type: "",
-          //   details: "",
-          //   specsList: [],
-          //   sku: [],
-          // };
+          this.$refs[formName].resetFields();
         } else {
           return false;
         }

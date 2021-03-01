@@ -28,8 +28,8 @@ export default {
   data() {
     return {
       form: {
-        account: "",
-        password: "",
+        account: "123",
+        password: "123",
       },
       rules: {
         account: [{ required: true, message: "请输入账号", trigger: "blur" }],
@@ -65,20 +65,5 @@ export default {
 </script>
 
 <style lang="less" >
-.demo-ruleForm {
-  margin-top: 20px;
-  .el-input__inner {
-    border: 1px solid #3e4957;
-    background-color: #2d3a4b;
-    color: #fff;
-    height: 50px;
-    line-height: 50px;
-  }
-  .el-form-item.is-error .el-input__inner {
-    border: 1px solid #3e4957;
-  }
-  .login-btn {
-    width: 100%;
-  }
-}
+
 </style>

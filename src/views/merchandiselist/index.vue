@@ -4,13 +4,23 @@
       <el-input v-model="input" placeholder="请输入内容"></el-input>
       <el-button type="primary" @click="search">搜索</el-button>
     </div>
-    <!-- <search></search> -->
-    <!-- <tab></tab> -->
     <div class="list">
-      <el-table :data="List" style="width: 100%" border stripe>
-        <el-table-column prop="id" label="商品ID" width="80" align="center">
+      <el-table :data="searchData" style="width: 100%" border stripe>
+        <el-table-column
+          prop="id"
+          label="商品ID"
+          width="100"
+          align="center"
+          sortable
+        >
         </el-table-column>
-        <el-table-column prop="type" label="商品类别" width="80" align="center">
+        <el-table-column
+          prop="type"
+          label="商品类别"
+          width="120"
+          align="center"
+          sortable
+        >
         </el-table-column>
         <el-table-column label="商品图片" width="100" align="center">
           <template slot-scope="scope">
@@ -36,8 +46,10 @@
         </el-table-column>
         <el-table-column label="规格/库存" type="expand" width="150">
           <template slot-scope="props">
+            <p class="row">规格信息</p>
             <addspec :props="props"></addspec>
             <spectable :props="props"></spectable>
+            <p class="row">组合/库存</p>
             <addsku :props="props"></addsku>
             <skutable :props="props"></skutable>
           </template>
@@ -75,7 +87,7 @@
                 <el-option
                   :label="item.title"
                   :value="item.title"
-                  v-for="(item, index) in Tabs"
+                  v-for="(item, index) in Tab"
                   :key="index"
                 ></el-option>
               </el-select>
@@ -142,37 +154,21 @@ export default {
       },
       id: "",
       input: "",
-      List: [],
       searchData: [],
       dialogFormVisible: false,
       dialogImageUrl: "",
       dialogVisible: false,
     };
   },
+  created() {
+    this.searchData = this.$store.getters.getList;
+  },
   computed: {
-    // List() {
-    //   if (this.bbb.length == 0 || this.input.trim().length == 0) {
-    //     return this.$store.getters.getList;
-    //   }
-    //   // if (this.bbb.length == 0 && this.input.trim().length > 0) {
-    //   //   // this.bbb = [];
-    //   //   return this.bbb;
-    //   // }
-    //   return this.bbb;
-    // },
     Tab() {
       return this.$store.getters.getTab;
     },
-    total() {
-      return this.Tabs.length;
-    },
-    Tabs() {
-      return this.Tab.slice(1, this.Tab.length);
-    },
   },
-  mounted() {
-    this.List = this.$store.getters.getList;
-  },
+
   methods: {
     ImgUrl(row) {
       return row.img[0];
@@ -201,7 +197,7 @@ export default {
     spuInfo(id) {
       this.dialogFormVisible = true;
       this.id = id;
-      let info = this.List.filter((row) => row.id == this.id);
+      let info = this.searchData.filter((row) => row.id == this.id);
       info.forEach((el) => {
         this.infos = el;
       });
@@ -220,13 +216,13 @@ export default {
       });
     },
     search() {
-      // this.searchData = [];
-      // this.List.forEach((row) => {
-      //   if (row.title.indexOf(this.input) >= 0) {
-      //     this.searchData.push(row);
-      //   }
-      // });
-      // this.List = this.searchData;
+      let aaa = [];
+      this.$store.getters.getList.forEach((row) => {
+        if (row.title.indexOf(this.input) >= 0) {
+          aaa.push(row);
+        }
+      });
+      this.searchData = aaa;
     },
     handlePictureCardPreview(url) {
       this.dialogImageUrl = url;
@@ -259,8 +255,8 @@ export default {
   },
   watch: {
     input(val) {
-      if (val == "") {
-        this.List = this.$store.getters.getList;
+      if (!val) {
+        this.searchData = this.$store.getters.getList;
       }
     },
   },
@@ -332,5 +328,10 @@ export default {
       line-height: 40px;
     }
   }
+}
+.row {
+  margin: 5px 0;
+  font-size: 15px;
+  font-weight: 800;
 }
 </style>

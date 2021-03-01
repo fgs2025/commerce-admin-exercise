@@ -1,11 +1,21 @@
 <template>
   <div class="addsku">
+    <div class="img-box" v-if="form.img != ''">
+      <img :src="form.img" alt="" />
+      <div class="img-show">
+        <i class="el-icon-zoom-in" @click="handlePictureCardPreview()"></i>
+      </div>
+    </div>
+    <el-dialog :visible.sync="dialogVisible" append-to-body>
+      <img width="100%" :src="dialogImageUrl" alt="" />
+    </el-dialog>
     <el-select
       v-for="(item, index) in props.row.specsList"
       clearable
       v-model="form.Composition[index]"
       :placeholder="item.title"
       :key="index"
+      filterable
     >
       <el-option
         v-for="(ite, inde) in item.spec"
@@ -17,7 +27,15 @@
     </el-select>
     <el-input v-model="form.rate" placeholder="请输入价格"></el-input>
     <el-input v-model="form.stock" placeholder="请输入库存"></el-input>
-    <el-button type="primary" size="mini" @click="add(props.row.id)"
+    <el-upload
+      action=""
+      list-type="picture"
+      multiple
+      :before-upload="beforeUpload"
+    >
+      <el-button type="primary">上传图片</el-button>
+    </el-upload>
+    <el-button type="primary" @click="add(props.row.id)" class="add-btn"
       >添加组合</el-button
     >
   </div>
@@ -34,6 +52,8 @@ export default {
         stock: "",
         Composition: [],
       },
+      dialogVisible: false,
+      dialogImageUrl: "",
     };
   },
 
@@ -60,20 +80,62 @@ export default {
         });
       }
     },
+    beforeUpload(file) {
+      this.form.img = URL.createObjectURL(file);
+      return false;
+    },
+    handlePictureCardPreview() {
+      this.dialogVisible = true;
+      this.dialogImageUrl = this.form.img;
+    },
   },
 };
 </script>
 
 <style lang="less" scoped>
 .addsku {
-  margin-top: 10px;
+  // margin-top: 10px;
   display: flex;
+  align-items: center;
   .el-select {
     margin-right: 20px;
   }
   .el-input {
     width: 130px;
     margin-right: 20px;
+  }
+  .add-btn {
+    margin-left: 10px;
+  }
+  .img-box {
+    width: 50px;
+    height: 50px;
+    position: relative;
+    margin-right: 10px;
+    img {
+      width: 100%;
+      height: 100%;
+    }
+    .img-show {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      background-color: rgba(0, 0, 0, 0.5s);
+      opacity: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      i {
+        font-size: 20px;
+        color: #fff;
+        cursor: pointer;
+      }
+    }
+    &:hover .img-show {
+      opacity: 1;
+    }
   }
 }
 </style>
