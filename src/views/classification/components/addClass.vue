@@ -6,6 +6,11 @@
 
 <script>
 export default {
+  computed: {
+    Tab() {
+      return this.$store.getters.getTab;
+    },
+  },
   methods: {
     addClass() {
       this.$prompt("请输入要添加的分类名称", "提示", {
@@ -15,11 +20,16 @@ export default {
         inputErrorMessage: "不能为空",
       })
         .then(({ value }) => {
-          this.$store.dispatch("classify/setClass", {title: value });
-          this.$message({
-            type: "success",
-            message: "添加成功",
-          });
+          let type = this.Tab.filter((row) => row.title == value);
+          if (type.length != 0) {
+            this.$message.error("添加失败，已有该分类名称");
+          } else {
+            this.$store.dispatch("classify/setClass", { title: value });
+            this.$message({
+              type: "success",
+              message: "添加成功",
+            });
+          }
         })
         .catch(() => {
           this.$message({

@@ -184,6 +184,13 @@ export default {
         }
       });
     },
+    changeSkuClass(state,val){
+     state.forEach(row=>{
+       if(row.type==val.old){
+          row.type=val.new
+       }
+     })
+    }
   },
   actions: {
     addspu({ commit }, val) {
@@ -218,6 +225,9 @@ export default {
     },
     changesku({ commit }, val) {
       commit("changesku", val);
+    },
+    changeSkuClass({ commit }, val) {
+      commit("changeSkuClass", val);
     },
   },
 };

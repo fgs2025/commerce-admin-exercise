@@ -99,17 +99,27 @@ export default {
     Tab() {
       return this.$store.getters.getTab;
     },
+    List() {
+      return this.$store.getters.getList;
+    },
   },
   methods: {
     addspu(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$store.dispatch("spu/addspu", { ...this.ruleForm });
-          this.$message({
-            message: "添加成功",
-            type: "success",
-          });
-          this.$refs[formName].resetFields();
+          let title = this.List.filter(
+            (row) => row.title == this.ruleForm.title
+          );
+          if (title.length == 0) {
+            this.$store.dispatch("spu/addspu", { ...this.ruleForm });
+            this.$message({
+              message: "添加成功",
+              type: "success",
+            });
+            this.$refs[formName].resetFields();
+          } else {
+            this.$message.error("已有重名商品");
+          }
         } else {
           return false;
         }

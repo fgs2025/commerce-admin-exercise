@@ -1,6 +1,5 @@
 <template>
   <el-table :data="props.row.specsList" style="width: 100%" border>
-    
     <el-table-column prop="title" label="名称" width="180"> </el-table-column>
     <el-table-column prop="spec" label="类型">
       <template slot-scope="scope">

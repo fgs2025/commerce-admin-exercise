@@ -44,6 +44,9 @@ export default {
     };
   },
   computed: {
+    List() {
+      return this.$store.getters.getList;
+    },
     Tab() {
       return this.$store.getters.getTab;
     },
@@ -60,27 +63,41 @@ export default {
   methods: {
     remove(index) {
       index = this.currentPage * this.pagesize - (this.pagesize - index);
-      this.$confirm("此操作将永久删除该分类, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
-          this.$store.dispatch("classify/updata", index);
-          this.$message({
-            type: "success",
-            message: "删除成功!",
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "取消删除",
-          });
+      let title = this.List.filter((row) => row.type == this.Tab[index].title);
+      if (title.length > 0) {
+        this.$alert("该分类下有多个商品，不可删除该分类", "警告", {
+          confirmButtonText: "确定",
+          callback: () => {
+            this.$message({
+              type: "warning",
+              message: `删除失败`,
+            });
+          },
         });
+      } else {
+        this.$confirm("此操作将永久删除该分类, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+          .then(() => {
+            this.$store.dispatch("classify/updata", index);
+            this.$message({
+              type: "success",
+              message: "删除成功!",
+            });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "取消删除",
+            });
+          });
+      }
     },
     change(index) {
       index = this.currentPage * this.pagesize - (this.pagesize - index);
+      let title = this.Tab[index].title;
       this.$prompt("请输入修改的分类名称", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -89,14 +106,23 @@ export default {
         inputValue: `${this.Tab[index].title}`,
       })
         .then(({ value }) => {
-          this.$store.dispatch("classify/change", {
-            index: index,
-            val: value,
-          });
-          this.$message({
-            type: "success",
-            message: "修改成功",
-          });
+          let type = this.Tab.filter((row) => row.title == value);
+          if (type.length != 0) {
+            this.$message.error("修改失败，已有该分类名称");
+          } else {
+            this.$store.dispatch("classify/change", {
+              index: index,
+              val: value,
+            });
+            this.$store.dispatch("spu/changeSkuClass", {
+              old: title,
+              new: value,
+            });
+            this.$message({
+              type: "success",
+              message: "修改成功",
+            });
+          }
         })
         .catch(() => {
           this.$message({
