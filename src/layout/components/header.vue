@@ -1,17 +1,22 @@
 <template>
   <div class="header-wrap">
     <div class="logo">电商管理系统</div>
-    <div >退出</div>
+    <div @click="Logout" class="Logout">退出</div>
   </div>
 </template>
 
 <script>
 export default {
-  methods:{
-    tuichu(){
-
-    }
-  }
+  methods: {
+    Logout() {
+      this.$store.dispatch("user/Logout");
+      this.$router.replace("/login");
+      this.$message({
+        message: "退出成功",
+        type: "success",
+      });
+    },
+  },
 };
 </script>
 
@@ -23,6 +28,9 @@ export default {
   justify-content: space-between;
   .logo {
     font-size: 30px;
+  }
+  .Logout {
+    cursor: pointer;
   }
 }
 </style>

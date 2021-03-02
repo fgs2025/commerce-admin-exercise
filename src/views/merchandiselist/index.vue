@@ -1,7 +1,7 @@
 <template>
   <div class="merchandiselist-wrap">
     <div class="search-box">
-      <el-input v-model="input" placeholder="请输入内容"></el-input>
+      <el-input v-model="input" placeholder="请输入商品名称"></el-input>
       <el-button type="primary" @click="search">搜索</el-button>
     </div>
     <div class="list">
@@ -59,7 +59,10 @@
             <el-button size="mini" @click="spuInfo(props.row.id)"
               >编辑</el-button
             >
-            <el-button size="mini" type="danger" @click="shanchu(props.row.id)"
+            <el-button
+              size="mini"
+              type="danger"
+              @click="removespu(props.row.id)"
               >删除</el-button
             >
           </template>
@@ -173,7 +176,7 @@ export default {
     ImgUrl(row) {
       return row.img[0];
     },
-    shanchu(id) {
+    removespu(id) {
       this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",

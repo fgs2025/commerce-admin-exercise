@@ -23,9 +23,9 @@ export default {
     return {};
   },
   mounted() {
-    if (this.$store.getters.getActive != true) {
-      this.$router.replace("/login");
-    }
+    // if (this.$store.getters.getActive != true) {
+    //   this.$router.replace("/login");
+    // }
   },
 
   components: { headers, asides },

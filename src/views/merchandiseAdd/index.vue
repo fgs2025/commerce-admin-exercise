@@ -117,6 +117,7 @@ export default {
               type: "success",
             });
             this.$refs[formName].resetFields();
+            this.ruleForm.img=[]
           } else {
             this.$message.error("已有重名商品");
           }
@@ -127,6 +128,7 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+      this.ruleForm.img=[]
     },
 
     // img_change(e) {

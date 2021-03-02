@@ -16,8 +16,10 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="rate" label="价格" width="180"> </el-table-column>
-      <el-table-column prop="stock" label="库存" width="180"> </el-table-column>
+      <el-table-column prop="rate" label="价格(元)" width="180">
+      </el-table-column>
+      <el-table-column prop="stock" label="库存(个)" width="180">
+      </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" @click="skuInfo(props.row.id, scope.$index)"
