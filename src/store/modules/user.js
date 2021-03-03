@@ -3,7 +3,7 @@ export default {
   state: {
     user: "123",
     password: "123",
-    active: false,
+    active: true,
   },
   mutations: {
     setAdmin(state, val) {
