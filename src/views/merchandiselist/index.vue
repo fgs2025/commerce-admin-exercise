@@ -202,9 +202,6 @@ export default {
       this.id = id;
       let info = this.searchData.filter((row) => row.id == this.id);
       this.infos=info[0]
-      // info.forEach((el) => {
-      //   this.infos = el;
-      // });
       let obj = JSON.parse(JSON.stringify(this.infos));
       this.Form.title = obj.title;
       this.Form.type = obj.type;

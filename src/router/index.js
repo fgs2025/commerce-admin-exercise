@@ -1,6 +1,10 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import store from "../store/index.js";
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
+
+NProgress.configure({ showSpinner: false });
 
 Vue.use(VueRouter);
 
@@ -41,10 +45,15 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  NProgress.start();
   /* 必须调用 `next` */
   if (store.getters.getActive == false && to.path != "/login") {
     next("/login");
   }
   next();
+});
+
+router.afterEach(() => {
+  NProgress.done();
 });
 export default router;

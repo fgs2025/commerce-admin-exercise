@@ -8,7 +8,9 @@
         <asides></asides>
       </el-aside>
       <el-main>
-        <router-view />
+        <transition name="fade-transform" mode="out-in">
+          <router-view />
+        </transition>
       </el-main>
     </el-container>
   </el-container>
@@ -48,6 +50,21 @@ export default {
   .el-main {
     background-color: #e9eef3;
     color: #333;
+    overflow-x: hidden;
   }
+}
+.fade-transform-leave-active,
+.fade-transform-enter-active {
+  transition: all 0.5s;
+}
+
+.fade-transform-enter {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.fade-transform-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
 }
 </style>
