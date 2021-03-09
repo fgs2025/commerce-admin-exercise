@@ -201,7 +201,7 @@ export default {
       this.dialogFormVisible = true;
       this.id = id;
       let info = this.searchData.filter((row) => row.id == this.id);
-      this.infos=info[0]
+      this.infos = info[0];
       let obj = JSON.parse(JSON.stringify(this.infos));
       this.Form.title = obj.title;
       this.Form.type = obj.type;
